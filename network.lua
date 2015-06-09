@@ -69,7 +69,7 @@ function on_event()
         data = connects[tid .."-".. fdnum]
         if data ~= nil then
             delta = evt.field(rawtimetype) - data.start
-            print(evt.field(datetimetype) .."	".. evt.field(rawtimetype) .."	".. math.floor(delta / 1000000) .."	".. data.cip ..":".. data.cport .."	".. data.sip ..":".. data.sport .."	".. data.write .."	".. data.read)
+            print(evt.field(datetimetype) .."	".. math.floor(evt.field(rawtimetype) / 1000000) .."	".. math.floor(delta / 1000000) .."	".. data.cip ..":".. data.cport .."	".. data.sip ..":".. data.sport .."	".. data.write .."	".. data.read)
             data = nil
         end
     end
