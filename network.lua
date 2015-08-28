@@ -29,9 +29,13 @@ function on_event()
     tid = evt.field(tidtype)
     dir = evt.field(evtdirytype)
     etype = evt.field(evttype)
+    fdnum = evt.field(fdnumtype)
+
+    if fdnum == nil then
+        return false
+    end
 
     if etype == "connect" and dir == "<" then
-        fdnum = evt.field(fdnumtype)
         connects[tid .."-".. fdnum] = {}
         connects[tid .."-".. fdnum].evtnum = evt.field(evtnumtype)
         connects[tid .."-".. fdnum].connectlatency = evt.field(evtlatency)
@@ -47,7 +51,6 @@ function on_event()
     end
 
     if etype == "write" and dir == "<" then
-        fdnum = evt.field(fdnumtype)
         data = connects[tid .."-".. fdnum]
         if data ~= nil then
             connects[tid .."-".. fdnum].write = string.sub(evt.field(argstype),0,100)
@@ -59,7 +62,6 @@ function on_event()
     end
 
     if etype == "read" and dir == "<" then
-        fdnum = evt.field(fdnumtype)
         args = evt.field(argstype)
         data = connects[tid .."-".. fdnum]
         if data ~= nil then
@@ -72,7 +74,6 @@ function on_event()
     end
 
     if etype == "close" then
-        fdnum = evt.field(fdnumtype)
         data = connects[tid .."-".. fdnum]
         if data ~= nil then
             delta = evt.field(rawtimetype) - data.start
@@ -82,5 +83,6 @@ function on_event()
             connects[tid .."-".. fdnum] = nil
         end
     end
+
     return true
 end
