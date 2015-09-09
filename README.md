@@ -19,6 +19,11 @@ Example usage:
 
     sysdig -c network proc.name=apache
 
+    # Takes an optional argument for the max length of the write/read columns.
+    # Truncate at 500, rather than the default of 50:
+    sysdig -c network 500 proc.name=apache
+
+
 Example output:
 
 ```

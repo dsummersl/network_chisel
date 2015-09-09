@@ -5,6 +5,27 @@ category = "network"
 args = {}
 connects = {}
 
+-- The maximum number of bytes to show in the results from the read/write:
+truncateBytes = 50
+
+args =
+{
+    {
+        name = "truncate",
+        description = "Max bytes to show in read/write columns (default: 50).",
+        argtype = "int",
+        optional = true
+    }
+}
+
+function on_set_arg(name, val)
+    if name == "truncate" then
+        truncateBytes = val
+        return true
+    end
+    return false
+end
+
 function on_init()
     fdnumtype = chisel.request_field("fd.num")
     fdiptype = chisel.request_field("fd.ip")
@@ -53,7 +74,7 @@ function on_event()
     if etype == "write" and dir == "<" then
         data = connects[tid .."-".. fdnum]
         if data ~= nil then
-            connects[tid .."-".. fdnum].write = string.sub(evt.field(argstype),0,100)
+            connects[tid .."-".. fdnum].write = string.sub(evt.field(argstype),0,truncateBytes)
             connects[tid .."-".. fdnum].bytes_wrote = connects[tid .."-".. fdnum].bytes_wrote + evt.field(bytestype)
         else
             -- Long running 'alive' transaction probably fall into this
@@ -65,7 +86,7 @@ function on_event()
         args = evt.field(argstype)
         data = connects[tid .."-".. fdnum]
         if data ~= nil then
-            connects[tid .."-".. fdnum].read = string.sub(evt.field(argstype),0,100)
+            connects[tid .."-".. fdnum].read = string.sub(evt.field(argstype),0,truncateBytes)
             connects[tid .."-".. fdnum].bytes_read = connects[tid .."-".. fdnum].bytes_read + evt.field(bytestype)
         else
             -- Long running 'alive' transaction probably fall into this
